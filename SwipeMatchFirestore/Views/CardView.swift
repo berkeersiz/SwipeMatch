@@ -195,3 +195,11 @@ class CardView: UIView {
     }
     
 }
+
+/*
+ swift map fonksiyonu
+ swift anchor fonksiyonu
+ swift didset nedir
+ removeallanimation swift
+ arranged subview swift
+ */

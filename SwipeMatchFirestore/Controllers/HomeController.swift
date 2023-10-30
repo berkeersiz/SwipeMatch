@@ -26,14 +26,18 @@ class HomeController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        topStackView.settingsButton.addTarget(self, action: #selector(handleSettings), for: .touchUpInside)
 
         setupLayout()//setup layout kismini sag tik refactor extract method ile yaptik.
         
         setupDummyCards()
-        
-        
-        
+           
+    }
+    
+    @objc func handleSettings() {
+        print("show resigtration page.")
+        let registrationController = RegistrationController()
+        present(registrationController, animated: true)
     }
 
     fileprivate func setupDummyCards() {//Kartlari gostermemizi saglayan fonks.
