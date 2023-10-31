@@ -13,5 +13,6 @@ pod 'FirebaseStorage'
 pod 'FirebaseCore'
 pod 'SDWebImage'
 pod 'JGProgressHUD'
+pod 'GoogleAppMeasurement'
 
 end

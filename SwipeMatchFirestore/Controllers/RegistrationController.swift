@@ -6,8 +6,24 @@
 //
 
 import UIKit
+import FirebaseCore
+import FirebaseAuth
+import JGProgressHUD
 
-class RegistrationController: UIViewController {
+extension RegistrationController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image = info[.originalImage] as? UIImage
+        self.selectPhotoButton.setImage(image?.withRenderingMode(.alwaysOriginal), for: .normal)
+        dismiss(animated: true, completion: nil)
+    }
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true)
+    }
+    
+    
+}
+class RegistrationController: UIViewController{
     
     // UI Components
     let selectPhotoButton: UIButton = {
@@ -18,8 +34,17 @@ class RegistrationController: UIViewController {
         button.setTitleColor(.black, for: .normal)
         button.heightAnchor.constraint(equalToConstant: 300).isActive = true
         button.layer.cornerRadius = 16
+        button.addTarget(self, action: #selector(handleSelectPhoto), for: .touchUpInside)//img secebilmek icin.
+        button.imageView?.contentMode = .scaleAspectFill//sectigimiz img icin.
+        button.clipsToBounds = true
         return button
     }()
+    
+    @objc fileprivate func handleSelectPhoto() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true)
+    }
     
     let fullNameTextField: CustomTextField = {
         let tf = CustomTextField(padding: 24, height: 44)
@@ -81,9 +106,33 @@ class RegistrationController: UIViewController {
         button.isEnabled = false
         button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.layer.cornerRadius = 22
+        button.addTarget(self, action: #selector(handleRegister), for: .touchUpInside)
         return button
     }()
+    
+    @objc fileprivate func handleRegister() {
+        print("register our user in firebase auth.")
+        guard let email = emailTextField.text else {return}
+        guard let password = emailTextField.text else {return}
+        Auth.auth().createUser(withEmail: email, password: password)
+        { (res, err) in
+            
+            if let err = err {
+                print(err)
+                self.showHUDWithError(error: err)
+                return
+            }
+            print("succuuessfully registered user:", res?.user.uid ?? "")
+        }
+    }
 
+    fileprivate func showHUDWithError(error: Error) {
+        let hud = JGProgressHUD(style: .dark)
+        hud.textLabel.text = "Failed Registration"
+        hud.detailTextLabel.text = error.localizedDescription
+        hud.show(in: self.view)
+        hud.dismiss(afterDelay: 4)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
