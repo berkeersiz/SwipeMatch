@@ -9,7 +9,7 @@ import UIKit
 
 class RegistrationController: UIViewController {
     
-    // UI Components SOR!
+    // UI Components
     let selectPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Select Photo", for: .normal)
@@ -25,6 +25,7 @@ class RegistrationController: UIViewController {
         let tf = CustomTextField(padding: 24, height: 44)
         tf.placeholder = "Enter Full Name"
         tf.backgroundColor = .white
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
     
@@ -33,6 +34,7 @@ class RegistrationController: UIViewController {
         tf.placeholder = "Enter Email"
         tf.keyboardType = .emailAddress
         tf.backgroundColor = .white
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
     
@@ -41,15 +43,42 @@ class RegistrationController: UIViewController {
         tf.placeholder = "Enter Password"
         tf.isSecureTextEntry = true // yazilani gizlemek.
         tf.backgroundColor = .white
+        tf.addTarget(self, action: #selector(handleTextChange), for: .editingChanged)
         return tf
     }()
+    
+    //bosluklar dolmadan butonun aktif olmamasi icin.
+    @objc fileprivate func handleTextChange(textField: UITextField) {
+        if textField == fullNameTextField {
+            print("fullnamechanging")
+        } else if textField == emailTextField {
+            print("emailchanging")
+        } else {
+            print("passwordchanging")
+        }
+        
+        let isFormValid = fullNameTextField.text?.isEmpty == false && emailTextField.text?.isEmpty == false && passwordTextField.text?.isEmpty == false
+        
+        registerButton.isEnabled = isFormValid
+        if isFormValid {
+            registerButton.setTitleColor(.white, for: .normal)
+            registerButton.backgroundColor = UIColor(cgColor: CGColor(red: 230, green: 0, blue: 83, alpha: 0.5))
+        } else {
+            registerButton.backgroundColor = .lightGray
+            registerButton.setTitleColor(.gray , for: .normal)
+        }
+        
+    }
     
     let registerButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Register", for: .normal)
         button.setTitleColor(.white, for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .heavy)
-        button.backgroundColor = UIColor(cgColor: CGColor(red: 230, green: 0, blue: 83, alpha: 0.5))
+        //button.backgroundColor = UIColor(cgColor: CGColor(red: 230, green: 0, blue: 83, alpha: 0.5))
+        button.backgroundColor = .lightGray
+        button.setTitleColor(.gray, for: .disabled)
+        button.isEnabled = false
         button.heightAnchor.constraint(equalToConstant: 44).isActive = true
         button.layer.cornerRadius = 22
         return button
