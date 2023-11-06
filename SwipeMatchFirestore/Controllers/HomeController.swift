@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import FirebaseFirestore
 
 class HomeController: UIViewController {
     
@@ -13,14 +14,16 @@ class HomeController: UIViewController {
     let cardsDeckView = UIView()
     let buttonStackView = HomeBottomControlsStackView()
    
-    let cardViewModels = ([
+    /*let cardViewModels = ([
         User(name: "Kelly", age: 23, profession: "Music DJ", imageNames: ["kelly1","kelly2","kelly3"]),
         User(name: "Lady", age: 23, profession: "Music DJ", imageNames: ["lady5c"]),
         User(name: "Jane", age: 18, profession: "Teacher", imageNames: ["jane1","jane2","jane3"]),
         Advertiser(title: "Slide Out Menu", brandName: "Lets Build That App", posterPhotoNames: ["slide_out_menu_poster"])
     ] as [ProducesCardViewModel]).map { (producer) -> CardViewModel in
         return producer.toCardViewModel()
-    }
+    }*/
+    
+    var cardViewModels = [CardViewModel]() // empty array
    
     
     override func viewDidLoad() {
@@ -31,7 +34,24 @@ class HomeController: UIViewController {
         setupLayout()//setup layout kismini sag tik refactor extract method ile yaptik.
         
         setupDummyCards()
+        
+        fetchUsersFromFirestore()
            
+    }
+    //onceki sayfadaki veriyi yakaladik.
+    fileprivate func fetchUsersFromFirestore() {
+        Firestore.firestore().collection("users").getDocuments { snapshot, err in
+            if let err = err {
+                print("frailed to fetch users:", err)
+                return
+            }
+            
+            snapshot?.documents.forEach({ documentSnapshot in
+                let userDictionary = documentSnapshot.data()
+                let user = User(dictionary: userDictionary)
+                self.cardViewModels.append(user.toCardViewModel())
+            })
+        }
     }
     
     @objc func handleSettings() {
@@ -65,6 +85,7 @@ class HomeController: UIViewController {
     // MARK: Fileprivate
     
     fileprivate func setupLayout() {
+        view.backgroundColor = .white
         let overallStackView = UIStackView(arrangedSubviews: [topStackView, cardsDeckView, buttonStackView])
         overallStackView.axis = .vertical //yatay sekilde yerlesmesini sagladi.
         view.addSubview(overallStackView)

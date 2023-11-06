@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class CardView: UIView {
     
@@ -13,7 +14,16 @@ class CardView: UIView {
         didSet {
             // accessing index 0 will crash if imageNames.count == 0
             let imageName = cardViewModel.imageNames.first ?? ""
-            imageView.image = UIImage(named: imageName)
+            //imageView.image = UIImage(named: imageName)
+            //ustteki imageler ilk basta firestoredan değil home controllerdaki arrayden imgleri aldigimiz icin vardi!!
+            
+            // load our image using some kind of url instead
+            
+            if let url = URL(string: imageName) {
+                imageView.sd_setImage(with: url)
+            }
+            
+            
             informationLabel.attributedText = cardViewModel.attributedString
             informationLabel.textAlignment = cardViewModel.textAlignment
             

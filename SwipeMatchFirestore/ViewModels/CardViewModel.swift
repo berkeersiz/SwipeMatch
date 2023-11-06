@@ -7,6 +7,7 @@
 
 import UIKit
 
+
 protocol ProducesCardViewModel {
     func toCardViewModel() -> CardViewModel
 }
@@ -32,6 +33,8 @@ class CardViewModel {
             let imageName = imageNames[imageIndex]
             let image = UIImage(named: imageName)
             imageIndexObserver?(imageIndex, image)
+            
+            
         }
     }
     // reactive programming

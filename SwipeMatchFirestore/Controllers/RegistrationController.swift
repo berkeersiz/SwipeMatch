@@ -109,12 +109,12 @@ class RegistrationController: UIViewController{
         
         print("register our user in firebase auth.")
         self.handleTapDismiss()
-        registrationViewModel.performRegistration { err  in
+        registrationViewModel.performRegistration { [weak self] err  in
             if let err = err {
-                self.showHUDWithError(error: err)
+                self?.showHUDWithError(error: err)
                 return
             }
-            print("registering finished.")
+            print("registering finished.")//register olabildikten sonraki asama.
         }
         
     }
